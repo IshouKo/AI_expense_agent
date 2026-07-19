@@ -17,7 +17,7 @@ FastAPI + SQLite + Streamlit implementation based on `ai_expense_agent_readme.md
 ## Quick Start
 
 ```bash
-cd /Users/Koishou/Desktop/ai_expense_agent
+cd ai_expense_agent
 python -m venv .venv
 source .venv/bin/activate
 pip install -r backend/requirements.txt -r frontend/requirements.txt
@@ -72,6 +72,6 @@ curl -X POST http://127.0.0.1:8000/api/v1/agent/chat \
 ## Tests
 
 ```bash
-cd /Users/Koishou/Desktop/ai_expense_agent/backend
+cd ai_expense_agent/backend
 pytest
 ```
