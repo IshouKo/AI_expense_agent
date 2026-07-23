@@ -9,6 +9,10 @@ class Settings(BaseSettings):
     default_user_name: str = "Default User"
     default_currency: str = "JPY"
     timezone: str = "Asia/Tokyo"
+    openai_api_key: str = ""
+    openai_model: str = "gpt-4.1-mini"
+    agent_memory_limit: int = 8
+    rag_top_k: int = 5
 
     model_config = SettingsConfigDict(env_file=".env", env_prefix="EXPENSE_")
 
