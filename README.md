@@ -86,6 +86,19 @@ FastAPI Response / Streamlit UI
 
 Agentロジック、データアクセス、分析処理を分離し、LLMは理解・抽出・ツール選択に限定します。金額集計、予測、DB更新はバックエンドの決定的なツールで実行します。
 
+### LLM Usage by Node / 各ノードでLLMが機能する範囲
+
+| Node | LLM Usage | API Key Empty Behavior | Role |
+|---|---|---|---|
+| Memory Node | No LLM | Always runs locally | `agent_logs` から直近会話・実行結果を読み込む |
+| RAG Node | No LLM | Always runs locally | SQLite内の取引、AgentLog、カテゴリ/ツール知識を検索する |
+| Planning Node | Uses LLM when configured | Falls back to rule-based parser | Structured Outputsで取引金額・日付・カテゴリなどを抽出し、実行計画とreasoning summaryを作る |
+| Tool Select Node | Uses LLM when configured | Falls back to deterministic intent rules | Function Callingで `add_transaction`、`query_spending_summary` などのツールを選択する |
+| Tool Exec Node | No LLM | Always runs locally | 選択されたPythonツールを実行し、DB更新・集計・予測を行う |
+| Response Formatting | No LLM in current implementation | Always runs locally | ツール結果を固定テンプレートでユーザー向けメッセージに整形する |
+
+現在の実装でLLMが直接関与するのは、APIキーが設定されている場合の **Planning Node** と **Tool Select Node** です。Memory、RAG、Tool execution、DB保存、金額計算、予測計算、レスポンス整形はローカルの決定的なPythonコードで実行されます。
+
 ## Tech Stack / 技術スタック
 
 | Layer | Technology |

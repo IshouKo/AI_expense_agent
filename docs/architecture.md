@@ -30,6 +30,19 @@ The `retrieve_context` node performs local keyword RAG over SQLite records and b
 
 Memory management reuses `agent_logs`: recent successful and failed turns are loaded into each graph run, summarized, passed to the LLM prompt, and returned in `data.agent.memory`.
 
+## LLM Usage by Node
+
+| Node | LLM Usage | API Key Empty Behavior | Responsibility |
+|---|---|---|---|
+| `load_memory` | No LLM | Runs locally | Loads recent `agent_logs` as short-term memory. |
+| `retrieve_context` | No LLM | Runs locally | Performs local keyword RAG over transactions, agent logs, category knowledge, and tool knowledge. |
+| `plan` | Uses LLM when configured | Falls back to rule-based parsing | Uses OpenAI Structured Outputs to extract transaction fields and create a compact reasoning summary. |
+| `select_tool` | Uses LLM when configured | Falls back to deterministic intent rules | Uses OpenAI Function Calling to select one controlled backend tool. |
+| `execute_tool` | No LLM | Runs locally | Executes deterministic Python tool functions for DB writes, analytics, budgets, forecasts, and advice. |
+| `respond` | No LLM in current implementation | Runs locally | Formats deterministic tool results into a user-facing response. |
+
+The LLM never writes directly to the database and never performs financial calculations. It only helps with language understanding, structured extraction, and tool selection when `EXPENSE_OPENAI_API_KEY` is configured.
+
 ## Deterministic Tools
 
 - `transaction_tool.py`: create, list, update, and delete transactions.
